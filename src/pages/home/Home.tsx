@@ -3,10 +3,13 @@ const Home = () => {
     <>
       <main className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[calc(100vh-130px)]">
         <div className="bg-white p-8 rounded-lg shadow-xl text-center max-w-3xl w-full">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1
+            className="text-4xl font-bold text-gray-900 mb-4"
+            data-testid="home-title"
+          >
             Student Management
           </h1>
-          <p className="text-lg text-gray-700 mb-6">
+          <p className="text-lg text-gray-700 mb-6" data-testid="home-msg">
             Welcome to the administrative panel. From here you can manage
             students, courses, enrollments and grades efficiently and securely.
           </p>
