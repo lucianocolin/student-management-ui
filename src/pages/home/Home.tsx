@@ -1,24 +1,25 @@
 const Home = () => {
   return (
     <>
-      <main className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[calc(100vh-130px)]">
+      <main className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[calc(100vh-140px)]">
         <div className="bg-white p-8 rounded-lg shadow-xl text-center max-w-3xl w-full">
           <h1
             className="text-4xl font-bold text-gray-900 mb-4"
             data-testid="home-title"
           >
-            Student Management
+            Welcome, Student
           </h1>
           <p className="text-lg text-gray-700 mb-6" data-testid="home-msg">
-            Welcome to the administrative panel. From here you can manage
-            students, courses, enrollments and grades efficiently and securely.
+            Access your academic information easily. Here you can review your
+            grades, track your tariff payments, and stay informed about your
+            academic progress.
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 cursor-pointer">
-              Go to Control Panel
+            <button className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition duration-300">
+              View Grades
             </button>
-            <button className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg shadow-md transition duration-300 cursor-pointer">
-              View Reports
+            <button className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg shadow-md transition duration-300">
+              Tariff Status
             </button>
           </div>
         </div>
