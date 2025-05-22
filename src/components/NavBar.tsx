@@ -1,7 +1,7 @@
 import { useState } from "react";
 import studentLogo from "../assets/student.svg";
 import RegisterUserModal from "./auth/RegisterUserModal";
-import { useRegisterUser } from "../services/auth/useAuth";
+import { useLoginUser, useRegisterUser } from "../services/auth/useAuth";
 import type { IRegisterUserProps } from "../interfaces/auth/IRegisterUserProps";
 import { toast } from "react-hot-toast";
 import {
@@ -9,19 +9,33 @@ import {
   REGISTER_USER_SUCCESS,
 } from "../constants/auth/register-user-messages";
 import { AxiosError } from "axios";
+import LoginUserModal from "./auth/LoginUserModal";
+import type { ILoginUserProps } from "../interfaces/auth/ILoginUserProps";
+import {
+  LOGIN_USER_ERROR,
+  LOGIN_USER_SUCCESS,
+} from "../constants/auth/login-user-messages";
 
 const NavBar = () => {
   const [isRegisterUserModalOpen, setIsRegisterUserModalOpen] =
     useState<boolean>(false);
-  const { mutateAsync, isPending: isRegisterUserPending } = useRegisterUser();
+  const [isLoginUserModalOpen, setIsLoginUserModalOpen] =
+    useState<boolean>(false);
+  const { mutateAsync: register, isPending: isRegisterUserPending } =
+    useRegisterUser();
+  const { mutateAsync: login, isPending: isLoginUserPending } = useLoginUser();
 
   const handleCloseRegisterUserModal = () => {
     setIsRegisterUserModalOpen(false);
   };
 
+  const handleCloseLoginUserModal = () => {
+    setIsLoginUserModalOpen(false);
+  };
+
   const handleRegisterUser = async (data: IRegisterUserProps) => {
     try {
-      await mutateAsync(data);
+      await register(data);
 
       toast.success(REGISTER_USER_SUCCESS);
       handleCloseRegisterUserModal();
@@ -30,6 +44,22 @@ const NavBar = () => {
         error instanceof AxiosError && error.response?.data?.message
           ? error.response.data.message
           : REGISTER_USER_ERROR;
+
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleLoginUser = async (data: ILoginUserProps) => {
+    try {
+      await login(data);
+
+      toast.success(LOGIN_USER_SUCCESS);
+      handleCloseLoginUserModal();
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError && error.response?.data?.message
+          ? error.response.data.message
+          : LOGIN_USER_ERROR;
 
       toast.error(errorMessage);
     }
@@ -54,6 +84,7 @@ const NavBar = () => {
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
             data-testid="nav-login-btn"
+            onClick={() => setIsLoginUserModalOpen(!isLoginUserModalOpen)}
           >
             Login
           </button>
@@ -72,6 +103,13 @@ const NavBar = () => {
         onClose={handleCloseRegisterUserModal}
         handleRegisterUser={handleRegisterUser}
         isRegisterUserPending={isRegisterUserPending}
+      />
+
+      <LoginUserModal
+        isOpen={isLoginUserModalOpen}
+        onClose={handleCloseLoginUserModal}
+        handleLoginUser={handleLoginUser}
+        isLoginUserPending={isLoginUserPending}
       />
     </>
   );
