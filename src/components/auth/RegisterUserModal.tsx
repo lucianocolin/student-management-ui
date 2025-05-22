@@ -22,6 +22,7 @@ const RegisterUserModal = ({
       data-testid="register-user-modal"
     >
       <div className="bg-white p-6 rounded-lg shadow-lg z-60 w-[25%]">
+        <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
         <RegisterUserForm
           onClose={onClose}
           handleRegisterUser={handleRegisterUser}
