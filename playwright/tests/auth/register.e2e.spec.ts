@@ -8,7 +8,7 @@ import {
   PASSWORD_REQUIRED,
   PHONE_NUMBER_MIN,
   PHONE_NUMBER_REQUIRED,
-} from "./../../../src/constants/auth/register-user-schema-errors";
+} from "./../../../src/constants/auth/auth-schema-errors";
 import { registerUserResponse } from "../../fixture/auth/register-user-response";
 import {
   REGISTER_USER_ERROR,

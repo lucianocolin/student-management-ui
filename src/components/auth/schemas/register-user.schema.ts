@@ -9,7 +9,7 @@ import {
   PASSWORD_REQUIRED,
   PHONE_NUMBER_MIN,
   PHONE_NUMBER_REQUIRED,
-} from "../../../constants/auth/register-user-schema-errors";
+} from "../../../constants/auth/auth-schema-errors";
 
 const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\]:;<>,.?~\\/-]).{8,}$/;
