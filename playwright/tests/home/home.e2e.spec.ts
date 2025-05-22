@@ -6,18 +6,16 @@ test.describe("Home", () => {
 
     await expect(page).toHaveTitle("Student Management");
 
-    await expect(page.getByTestId("home-title")).toHaveText(
-      "Student Management"
-    );
+    await expect(page.getByTestId("home-title")).toHaveText("Welcome, Student");
     await expect(page.getByTestId("home-msg")).toHaveText(
-      "Welcome to the administrative panel. From here you can manage students, courses, enrollments and grades efficiently and securely."
+      "Access your academic information easily. Here you can review your grades, track your tariff payments, and stay informed about your academic progress."
     );
 
     await expect(
-      page.getByRole("button", { name: "Go to Control Panel" })
+      page.getByRole("button", { name: "View Grades" })
     ).toBeVisible();
     await expect(
-      page.getByRole("button", { name: "View Reports" })
+      page.getByRole("button", { name: "Tariff Status" })
     ).toBeVisible();
   });
 });
