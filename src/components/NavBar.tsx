@@ -15,6 +15,7 @@ import {
   LOGIN_USER_ERROR,
   LOGIN_USER_SUCCESS,
 } from "../constants/auth/login-user-messages";
+import { useAuth } from "../hooks/auth/useAuth";
 
 const NavBar = () => {
   const [isRegisterUserModalOpen, setIsRegisterUserModalOpen] =
@@ -24,6 +25,7 @@ const NavBar = () => {
   const { mutateAsync: register, isPending: isRegisterUserPending } =
     useRegisterUser();
   const { mutateAsync: login, isPending: isLoginUserPending } = useLoginUser();
+  const { isAuthenticated, login: saveToken, logout } = useAuth();
 
   const handleCloseRegisterUserModal = () => {
     setIsRegisterUserModalOpen(false);
@@ -51,8 +53,9 @@ const NavBar = () => {
 
   const handleLoginUser = async (data: ILoginUserProps) => {
     try {
-      await login(data);
+      const response = await login(data);
 
+      saveToken(response.token as string);
       toast.success(LOGIN_USER_SUCCESS);
       handleCloseLoginUserModal();
     } catch (error) {
@@ -81,20 +84,33 @@ const NavBar = () => {
         </div>
 
         <div className="flex gap-5 items-center">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-            data-testid="nav-login-btn"
-            onClick={() => setIsLoginUserModalOpen(!isLoginUserModalOpen)}
-          >
-            Login
-          </button>
-          <button
-            className="bg-[#FABC3D] hover:bg-[#E89D04] text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-            data-testid="nav-signup-btn"
-            onClick={() => setIsRegisterUserModalOpen(!isRegisterUserModalOpen)}
-          >
-            Sign Up
-          </button>
+          {isAuthenticated ? (
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+              onClick={() => logout()}
+            >
+              Sign Out
+            </button>
+          ) : (
+            <>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                data-testid="nav-login-btn"
+                onClick={() => setIsLoginUserModalOpen(!isLoginUserModalOpen)}
+              >
+                Login
+              </button>
+              <button
+                className="bg-[#FABC3D] hover:bg-[#E89D04] text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                data-testid="nav-signup-btn"
+                onClick={() =>
+                  setIsRegisterUserModalOpen(!isRegisterUserModalOpen)
+                }
+              >
+                Sign Up
+              </button>
+            </>
+          )}
         </div>
       </div>
 

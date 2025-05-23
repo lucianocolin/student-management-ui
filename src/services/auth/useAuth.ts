@@ -2,11 +2,15 @@ import { useMutation } from "@tanstack/react-query";
 import { api } from "../../configs/axios";
 import type { IRegisterUserProps } from "../../interfaces/auth/IRegisterUserProps";
 import type { ILoginUserProps } from "../../interfaces/auth/ILoginUserProps";
+import type { IUserResponse } from "../../interfaces/user/IUserResponse";
 
 export function useRegisterUser() {
   return useMutation({
     mutationFn: async (data: IRegisterUserProps) => {
-      const { data: response } = await api.post("/auth/register", data);
+      const { data: response } = await api.post<IUserResponse>(
+        "/auth/register",
+        data
+      );
 
       return response;
     },
@@ -16,12 +20,12 @@ export function useRegisterUser() {
 export function useLoginUser() {
   return useMutation({
     mutationFn: async (data: ILoginUserProps) => {
-      const { data: response } = await api.post("/auth/login", data);
+      const { data: response } = await api.post<IUserResponse>(
+        "/auth/login",
+        data
+      );
 
       return response;
-    },
-    onSuccess: (data) => {
-      localStorage.setItem("accessToken", data.token);
     },
   });
 }
