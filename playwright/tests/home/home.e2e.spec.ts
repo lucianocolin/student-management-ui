@@ -10,12 +10,5 @@ test.describe("Home", () => {
     await expect(page.getByTestId("home-msg")).toHaveText(
       "Access your academic information easily. Here you can review your grades, track your tariff payments, and stay informed about your academic progress."
     );
-
-    await expect(
-      page.getByRole("button", { name: "View Grades" })
-    ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Tariff Status" })
-    ).toBeVisible();
   });
 });

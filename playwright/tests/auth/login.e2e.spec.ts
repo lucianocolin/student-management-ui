@@ -45,6 +45,16 @@ test.describe("Login Form", () => {
 
     await expect(loginUserModal).not.toBeVisible();
     await expect(page.getByText(LOGIN_USER_SUCCESS)).toBeVisible();
+
+    await expect(page.getByTestId("nav-grades-link")).toBeVisible();
+    await expect(page.getByTestId("nav-logout-btn")).toBeVisible();
+
+    await expect(
+      page.getByRole("button", { name: "View Grades" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Tariff Status" })
+    ).toBeVisible();
   });
 
   test("should show error messages if inputs are empty", async ({ page }) => {
