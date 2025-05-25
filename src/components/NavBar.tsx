@@ -16,6 +16,7 @@ import {
   LOGIN_USER_SUCCESS,
 } from "../constants/auth/login-user-messages";
 import { useAuth } from "../hooks/auth/useAuth";
+import { Link } from "react-router-dom";
 
 const NavBar = () => {
   const [isRegisterUserModalOpen, setIsRegisterUserModalOpen] =
@@ -85,12 +86,22 @@ const NavBar = () => {
 
         <div className="flex gap-5 items-center">
           {isAuthenticated ? (
-            <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-              onClick={() => logout()}
-            >
-              Sign Out
-            </button>
+            <>
+              <Link
+                to="/grades"
+                className="mr-4 font-bold"
+                data-testid="nav-grades-link"
+              >
+                Grades
+              </Link>
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                onClick={() => logout()}
+                data-testid="nav-logout-btn"
+              >
+                Sign Out
+              </button>
+            </>
           ) : (
             <>
               <button

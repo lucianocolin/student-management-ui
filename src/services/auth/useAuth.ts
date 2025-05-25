@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "../../configs/axios";
 import type { IRegisterUserProps } from "../../interfaces/auth/IRegisterUserProps";
 import type { ILoginUserProps } from "../../interfaces/auth/ILoginUserProps";
@@ -24,6 +24,17 @@ export function useLoginUser() {
         "/auth/login",
         data
       );
+
+      return response;
+    },
+  });
+}
+
+export function useGetMyUser() {
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: async () => {
+      const { data: response } = await api.get<IUserResponse>("/auth/me");
 
       return response;
     },
