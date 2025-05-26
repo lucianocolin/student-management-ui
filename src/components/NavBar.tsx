@@ -90,7 +90,7 @@ const NavBar = () => {
             data-testid="nav-logo"
           />
           <h1 className="text-2xl font-bold" data-testid="nav-title">
-            Student Management
+            <button onClick={() => navigate("/")}>Student Management</button>
           </h1>
         </div>
 
