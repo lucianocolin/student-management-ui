@@ -3,6 +3,6 @@ export const loginUserResponse = {
   fullName: "John Doe",
   email: "6tM0V@example.com",
   phoneNumber: "1234567890",
-  roles: ["user"],
+  roles: ["user", "admin"],
   token: "token123",
 };

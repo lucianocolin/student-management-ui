@@ -7,6 +7,7 @@ import {
   PASSWORD_FORMAT,
   PASSWORD_REQUIRED,
 } from "../../../src/constants/auth/auth-schema-errors";
+import { myUserResponse } from "../../fixture/user/my-user-response";
 
 test.describe("Login Form", () => {
   test.beforeEach(async ({ page }) => {
@@ -31,6 +32,14 @@ test.describe("Login Form", () => {
         status: 200,
         contentType: "application/json",
         body: JSON.stringify(loginUserResponse),
+      });
+    });
+
+    await context.route("**/api/auth/me", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(myUserResponse),
       });
     });
 
