@@ -1,15 +1,26 @@
 import { useGetMyUser } from "../../services/auth/useAuth";
 import { useGetStudent } from "../../services/student/useStudent";
 import Loading from "../../components/common/Loading";
-
 const Grades = () => {
   const { data: myUser, isPending: isMyUserPending } = useGetMyUser();
   const { data: student, isPending: isStudentPending } = useGetStudent(
     myUser?.studentId || ""
   );
 
+  if (!student) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <h1 className="text-2xl font-bold">No student found</h1>
+      </div>
+    );
+  }
+
   if (isMyUserPending || isStudentPending) {
-    return <Loading />;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loading />
+      </div>
+    );
   }
 
   return (

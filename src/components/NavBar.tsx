@@ -1,7 +1,11 @@
 import { useState } from "react";
 import studentLogo from "../assets/student.svg";
 import RegisterUserModal from "./auth/RegisterUserModal";
-import { useLoginUser, useRegisterUser } from "../services/auth/useAuth";
+import {
+  useGetMyUser,
+  useLoginUser,
+  useRegisterUser,
+} from "../services/auth/useAuth";
 import type { IRegisterUserProps } from "../interfaces/auth/IRegisterUserProps";
 import { toast } from "react-hot-toast";
 import {
@@ -18,17 +22,36 @@ import {
 import { useAuth } from "../hooks/auth/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { LOGOUT_USER_SUCCESS } from "../constants/auth/logout-user-messages";
+import { useQueryClient } from "@tanstack/react-query";
+import CreateStudentModal from "./student/CreateStudentModal";
+import { useCreateStudent } from "../services/student/useStudent";
+import type { ICreateStudentProps } from "../interfaces/student/ICreateStudentProps";
+import {
+  CREATE_STUDENT_ERROR,
+  CREATE_STUDENT_SUCCESS,
+} from "../constants/student/student-messages";
+import type { IUserResponse } from "../interfaces/user/IUserResponse";
+import { useGetCareers } from "../services/career/useCareer";
+import type { ICareerResponse } from "../interfaces/career/ICareerResponse";
 
 const NavBar = () => {
+  const queryClient = useQueryClient();
   const [isRegisterUserModalOpen, setIsRegisterUserModalOpen] =
     useState<boolean>(false);
   const [isLoginUserModalOpen, setIsLoginUserModalOpen] =
+    useState<boolean>(false);
+  const [isCreateStudentModalOpen, setIsCreateStudentModalOpen] =
     useState<boolean>(false);
   const { mutateAsync: register, isPending: isRegisterUserPending } =
     useRegisterUser();
   const { mutateAsync: login, isPending: isLoginUserPending } = useLoginUser();
   const { isAuthenticated, login: saveToken, logout } = useAuth();
   const navigate = useNavigate();
+  const { data: myUser } = useGetMyUser();
+  const hasStudentId = !!myUser?.studentId;
+  const { data: careers } = useGetCareers();
+  const { mutateAsync: createStudent, isPending: isCreateStudentPending } =
+    useCreateStudent();
 
   const handleCloseRegisterUserModal = () => {
     setIsRegisterUserModalOpen(false);
@@ -36,6 +59,10 @@ const NavBar = () => {
 
   const handleCloseLoginUserModal = () => {
     setIsLoginUserModalOpen(false);
+  };
+
+  const handleCloseCreateStudentModal = () => {
+    setIsCreateStudentModalOpen(false);
   };
 
   const handleRegisterUser = async (data: IRegisterUserProps) => {
@@ -61,6 +88,7 @@ const NavBar = () => {
       saveToken(response.token as string);
       toast.success(LOGIN_USER_SUCCESS);
       handleCloseLoginUserModal();
+      await queryClient.invalidateQueries({ queryKey: ["me"] });
     } catch (error) {
       const errorMessage =
         error instanceof AxiosError && error.response?.data?.message
@@ -77,6 +105,23 @@ const NavBar = () => {
     navigate("/");
 
     toast.success(LOGOUT_USER_SUCCESS);
+  };
+
+  const handleCreateStudent = async (data: ICreateStudentProps) => {
+    try {
+      await createStudent(data);
+
+      toast.success(CREATE_STUDENT_SUCCESS);
+      handleCloseCreateStudentModal();
+      await queryClient.invalidateQueries({ queryKey: ["me"] });
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError && error.response?.data?.message
+          ? error.response.data.message
+          : CREATE_STUDENT_ERROR;
+
+      toast.error(errorMessage);
+    }
   };
 
   return (
@@ -97,13 +142,33 @@ const NavBar = () => {
         <div className="flex gap-5 items-center">
           {isAuthenticated ? (
             <>
-              <Link
-                to="/grades"
-                className="mr-4 font-bold"
-                data-testid="nav-grades-link"
-              >
-                Grades
-              </Link>
+              {hasStudentId ? (
+                <Link
+                  to="/grades"
+                  className="mr-4 font-bold"
+                  data-testid="nav-grades-link"
+                >
+                  Grades
+                </Link>
+              ) : (
+                <>
+                  <span
+                    className="mr-4 font-bold"
+                    title="You must have a student ID to view your grades"
+                  >
+                    Grades
+                  </span>
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                    onClick={() =>
+                      setIsCreateStudentModalOpen(!isCreateStudentModalOpen)
+                    }
+                    data-testid="nav-create-student-btn"
+                  >
+                    Register Student Data
+                  </button>
+                </>
+              )}
               <button
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
                 onClick={handleLogout}
@@ -147,6 +212,15 @@ const NavBar = () => {
         onClose={handleCloseLoginUserModal}
         handleLoginUser={handleLoginUser}
         isLoginUserPending={isLoginUserPending}
+      />
+
+      <CreateStudentModal
+        isOpen={isCreateStudentModalOpen}
+        onClose={handleCloseCreateStudentModal}
+        user={myUser as IUserResponse}
+        handleCreateStudent={handleCreateStudent}
+        isCreateStudentPending={isCreateStudentPending}
+        careers={careers as ICareerResponse[]}
       />
     </>
   );
