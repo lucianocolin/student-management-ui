@@ -16,7 +16,8 @@ import {
   LOGIN_USER_SUCCESS,
 } from "../constants/auth/login-user-messages";
 import { useAuth } from "../hooks/auth/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { LOGOUT_USER_SUCCESS } from "../constants/auth/logout-user-messages";
 
 const NavBar = () => {
   const [isRegisterUserModalOpen, setIsRegisterUserModalOpen] =
@@ -27,6 +28,7 @@ const NavBar = () => {
     useRegisterUser();
   const { mutateAsync: login, isPending: isLoginUserPending } = useLoginUser();
   const { isAuthenticated, login: saveToken, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleCloseRegisterUserModal = () => {
     setIsRegisterUserModalOpen(false);
@@ -69,6 +71,14 @@ const NavBar = () => {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+
+    navigate("/");
+
+    toast.success(LOGOUT_USER_SUCCESS);
+  };
+
   return (
     <>
       <div className="flex p-2 px-10 shadow-md justify-between items-center">
@@ -96,7 +106,7 @@ const NavBar = () => {
               </Link>
               <button
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                onClick={() => logout()}
+                onClick={handleLogout}
                 data-testid="nav-logout-btn"
               >
                 Sign Out
