@@ -143,13 +143,22 @@ const NavBar = () => {
           {isAuthenticated ? (
             <>
               {hasStudentId ? (
-                <Link
-                  to="/grades"
-                  className="mr-4 font-bold"
-                  data-testid="nav-grades-link"
-                >
-                  Grades
-                </Link>
+                <>
+                  <Link
+                    to="/enrollments"
+                    className="mr-4 font-bold"
+                    data-testid="nav-enrollments-link"
+                  >
+                    Enroll in Subjects
+                  </Link>
+                  <Link
+                    to="/grades"
+                    className="mr-4 font-bold"
+                    data-testid="nav-grades-link"
+                  >
+                    Grades
+                  </Link>
+                </>
               ) : (
                 <>
                   <span
