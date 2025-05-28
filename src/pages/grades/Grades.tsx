@@ -1,11 +1,17 @@
 import { useGetMyUser } from "../../services/auth/useAuth";
 import { useGetStudent } from "../../services/student/useStudent";
 import Loading from "../../components/common/Loading";
+import EnrollmentTable from "../../components/enrollment/table/EnrollmentTable";
+import { useGetEnrollments } from "../../services/enrollment/useEnrollment";
 const Grades = () => {
   const { data: myUser, isPending: isMyUserPending } = useGetMyUser();
   const { data: student, isPending: isStudentPending } = useGetStudent(
-    myUser?.studentId || ""
+    myUser?.studentId ?? ""
   );
+  const { data: enrollments } = useGetEnrollments(myUser?.studentId ?? "", {
+    enabled: !!myUser?.studentId,
+    queryKey: ["enrollments"],
+  });
 
   if (!student) {
     return (
@@ -31,33 +37,14 @@ const Grades = () => {
       >
         Grades: {student?.fullName}
       </h1>
-      <div className="flex justify-center">
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-[80%]">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  Subjects
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Grades
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {student?.subjects.map((subject, index) => (
-                <tr
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  key={index}
-                >
-                  <td className="px-6 py-4">{subject}</td>
-                  <td className="px-6 py-4">
-                    {student.qualifications?.[index]}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className="px-[10%]">
+        <p className="pb-3 text-lg" data-testid="grades-career">
+          <span className="font-bold">Career:</span> {student?.career.name}
+        </p>
+        <div className="flex justify-center">
+          <div className="relative overflow-x-auto shadow-md sm:rounded-lg w-full">
+            <EnrollmentTable enrollments={enrollments || []} />
+          </div>
         </div>
       </div>
     </>
