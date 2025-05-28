@@ -62,7 +62,7 @@ test.describe("Login Form", () => {
       page.getByRole("button", { name: "View Grades" })
     ).toBeVisible();
     await expect(
-      page.getByRole("button", { name: "Tariff Status" })
+      page.getByRole("button", { name: "Enroll in Subjects" })
     ).toBeVisible();
   });
 

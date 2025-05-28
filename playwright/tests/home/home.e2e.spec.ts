@@ -8,7 +8,7 @@ test.describe("Home", () => {
 
     await expect(page.getByTestId("home-title")).toHaveText("Welcome, Student");
     await expect(page.getByTestId("home-msg")).toHaveText(
-      "Access your academic information easily. Here you can review your grades, track your tariff payments, and stay informed about your academic progress."
+      "Access your academic information easily. You can check your grades and enroll in subjects for the upcoming term."
     );
   });
 });

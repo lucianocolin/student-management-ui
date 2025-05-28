@@ -3,6 +3,7 @@ import { loginUserResponse } from "../../fixture/auth/login-user-response";
 import { LOGIN_USER_SUCCESS } from "../../../src/constants/auth/login-user-messages";
 import { myUserResponse } from "../../fixture/user/my-user-response";
 import { studentResponse } from "../../fixture/student/student-response";
+import { enrollmentsResponse } from "../../fixture/enrollment/enrollmentsResponse";
 
 test.describe("Grades Page", () => {
   test.beforeEach(async ({ page, context }) => {
@@ -53,6 +54,7 @@ test.describe("Grades Page", () => {
 
   test("should render the grades page correctly", async ({ page, context }) => {
     const gradesTitle = page.getByTestId("grades-title");
+    const gradesCareer = page.getByTestId("grades-career");
 
     await context.route("**/api/auth/me", async (route) => {
       await route.fulfill({
@@ -73,7 +75,26 @@ test.describe("Grades Page", () => {
       }
     );
 
+    await context.route(
+      "**/api/enrollment?studentId=c325d451-258f-480d-b0d9-7a09ff1556de",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(enrollmentsResponse),
+        });
+      }
+    );
+
     await expect(gradesTitle).toBeVisible();
     await expect(gradesTitle).toHaveText("Grades: Test User");
+
+    await expect(gradesCareer).toBeVisible();
+    await expect(gradesCareer).toHaveText("Career: Computer Science");
+
+    await expect(page.getByTestId("enrollment-table")).toBeVisible();
+    await expect(page.getByTestId("row-Programming")).toBeVisible();
+    await expect(page.getByTestId("row-Databases")).toBeVisible();
+    await expect(page.getByTestId("row-Math")).toBeVisible();
   });
 });
