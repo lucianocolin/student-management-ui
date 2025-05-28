@@ -1,7 +1,13 @@
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth/useAuth";
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <>
@@ -14,17 +20,22 @@ const Home = () => {
             Welcome, Student
           </h1>
           <p className="text-lg text-gray-700 mb-6" data-testid="home-msg">
-            Access your academic information easily. Here you can review your
-            grades, track your tariff payments, and stay informed about your
-            academic progress.
+            Access your academic information easily. You can check your grades
+            and enroll in subjects for the upcoming term.
           </p>
           {isAuthenticated && (
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <button className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition duration-300">
+              <button
+                className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md transition duration-300"
+                onClick={() => handleNavigate("/grades")}
+              >
                 View Grades
               </button>
-              <button className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg shadow-md transition duration-300">
-                Tariff Status
+              <button
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300"
+                onClick={() => handleNavigate("/enrollments")}
+              >
+                Enroll in Subjects
               </button>
             </div>
           )}
