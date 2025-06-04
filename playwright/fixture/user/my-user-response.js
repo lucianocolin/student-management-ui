@@ -3,6 +3,6 @@ export const myUserResponse = {
   fullName: "Test User",
   email: "testuser@test.com",
   phoneNumber: "1234567890",
-  roles: ["user", "admin"],
+  roles: ["user"],
   studentId: "c325d451-258f-480d-b0d9-7a09ff1556de",
 };
