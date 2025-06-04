@@ -29,7 +29,10 @@ const Admin = () => {
 
   return (
     <>
-      <h1 className="text-center text-2xl font-bold py-5">
+      <h1
+        className="text-center text-2xl font-bold py-5"
+        data-testid="admin-title"
+      >
         Admin Panel - Students
       </h1>
       <div className="container mx-auto">
@@ -39,6 +42,7 @@ const Admin = () => {
           className="mb-4 border border-gray-400 rounded-md p-2 w-[40%]"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          data-testid="admin-search-input"
         />
         <StudentsTable
           students={students ?? []}

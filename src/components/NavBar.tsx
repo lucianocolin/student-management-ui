@@ -129,7 +129,11 @@ const NavBar = () => {
   const renderNavLinks = () => {
     return isAdmin ? (
       <>
-        <Link to="/admin" className="mr-4 font-bold">
+        <Link
+          to="/admin"
+          className="mr-4 font-bold"
+          data-testid="nav-admin-link"
+        >
           Admin Panel
         </Link>
         <button
