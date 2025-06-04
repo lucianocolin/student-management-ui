@@ -3,5 +3,5 @@ export const myUserWithoutStudentResponse = {
   fullName: "Test User",
   email: "testuser@test.com",
   phoneNumber: "1234567890",
-  roles: ["user", "admin"],
+  roles: ["user"],
 };

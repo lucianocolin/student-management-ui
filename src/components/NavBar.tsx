@@ -33,6 +33,7 @@ import {
 import type { IUserResponse } from "../interfaces/user/IUserResponse";
 import { useGetCareers } from "../services/career/useCareer";
 import type { ICareerResponse } from "../interfaces/career/ICareerResponse";
+import { USER_ROLES } from "../enums/user/user-roles";
 
 const NavBar = () => {
   const queryClient = useQueryClient();
@@ -49,6 +50,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const { data: myUser } = useGetMyUser();
   const hasStudentId = !!myUser?.studentId;
+  const isAdmin = myUser?.roles.includes(USER_ROLES.ADMIN);
   const { data: careers } = useGetCareers();
   const { mutateAsync: createStudent, isPending: isCreateStudentPending } =
     useCreateStudent();
@@ -124,6 +126,73 @@ const NavBar = () => {
     }
   };
 
+  const renderNavLinks = () => {
+    return isAdmin ? (
+      <>
+        <Link
+          to="/admin"
+          className="mr-4 font-bold"
+          data-testid="nav-admin-link"
+        >
+          Admin Panel
+        </Link>
+        <button
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+          onClick={handleLogout}
+          data-testid="nav-logout-btn"
+        >
+          Sign Out
+        </button>
+      </>
+    ) : (
+      <>
+        {hasStudentId ? (
+          <>
+            <Link
+              to="/enrollments"
+              className="mr-4 font-bold"
+              data-testid="nav-enrollments-link"
+            >
+              Enroll in Subjects
+            </Link>
+            <Link
+              to="/grades"
+              className="mr-4 font-bold"
+              data-testid="nav-grades-link"
+            >
+              Grades
+            </Link>
+          </>
+        ) : (
+          <>
+            <span
+              className="mr-4 font-bold"
+              title="You must have a student ID to view your grades"
+            >
+              Grades
+            </span>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+              onClick={() =>
+                setIsCreateStudentModalOpen(!isCreateStudentModalOpen)
+              }
+              data-testid="nav-create-student-btn"
+            >
+              Register Student Data
+            </button>
+          </>
+        )}
+        <button
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+          onClick={handleLogout}
+          data-testid="nav-logout-btn"
+        >
+          Sign Out
+        </button>
+      </>
+    );
+  };
+
   return (
     <>
       <div className="flex p-2 px-10 shadow-md justify-between items-center">
@@ -141,51 +210,7 @@ const NavBar = () => {
 
         <div className="flex gap-5 items-center">
           {isAuthenticated ? (
-            <>
-              {hasStudentId ? (
-                <>
-                  <Link
-                    to="/enrollments"
-                    className="mr-4 font-bold"
-                    data-testid="nav-enrollments-link"
-                  >
-                    Enroll in Subjects
-                  </Link>
-                  <Link
-                    to="/grades"
-                    className="mr-4 font-bold"
-                    data-testid="nav-grades-link"
-                  >
-                    Grades
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <span
-                    className="mr-4 font-bold"
-                    title="You must have a student ID to view your grades"
-                  >
-                    Grades
-                  </span>
-                  <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                    onClick={() =>
-                      setIsCreateStudentModalOpen(!isCreateStudentModalOpen)
-                    }
-                    data-testid="nav-create-student-btn"
-                  >
-                    Register Student Data
-                  </button>
-                </>
-              )}
-              <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-                onClick={handleLogout}
-                data-testid="nav-logout-btn"
-              >
-                Sign Out
-              </button>
-            </>
+            renderNavLinks()
           ) : (
             <>
               <button
