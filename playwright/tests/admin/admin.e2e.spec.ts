@@ -4,6 +4,10 @@ import { myUserAdminResponse } from "../../fixture/user/my-user-admin-response";
 import { loginUserResponse } from "../../fixture/auth/login-user-response";
 import { studentsResponse } from "../../fixture/student/students-response";
 import { studentResponse } from "../../fixture/student/student-response";
+import {
+  DELETE_STUDENT_ERROR,
+  DELETE_STUDENT_SUCCESS,
+} from "../../../src/constants/student/student-messages";
 
 test.describe("Admin Page", () => {
   test.beforeEach(async ({ page, context }) => {
@@ -87,5 +91,79 @@ test.describe("Admin Page", () => {
     await searchInput.fill("Test User");
     await expect(page.getByTestId("row-0")).toBeVisible();
     await expect(page.getByTestId("cell-0_fullName")).toHaveText("Test User");
+  });
+
+  test("should be able to delete a student", async ({ page, context }) => {
+    const deleteButton = page.getByTestId("delete-student-btn-1");
+    let studentCallCount = 0;
+
+    await context.route("**/api/student", async (route) => {
+      studentCallCount++;
+
+      if (studentCallCount === 1) {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(studentsResponse),
+        });
+      } else {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify([studentResponse]),
+        });
+      }
+    });
+
+    await context.route(
+      "**/api/student/c325d451-258f-480d-b0d9-7a09ff1556df",
+      async (route) => {
+        await route.fulfill({
+          status: 204,
+        });
+      }
+    );
+
+    await expect(page.getByTestId("row-0")).toBeVisible();
+    await expect(page.getByTestId("row-1")).toBeVisible();
+
+    await expect(deleteButton).toBeVisible();
+    await deleteButton.click();
+
+    await expect(page.getByText(DELETE_STUDENT_SUCCESS)).toBeVisible();
+    await expect(page.getByTestId("row-0")).toBeVisible();
+    await expect(page.getByTestId("row-1")).not.toBeVisible();
+  });
+
+  test("should show an error an error message if there is an error deleting a student", async ({
+    page,
+    context,
+  }) => {
+    const deleteButton = page.getByTestId("delete-student-btn-1");
+
+    await context.route("**/api/student", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(studentsResponse),
+      });
+    });
+
+    await context.route(
+      "**/api/student/c325d451-258f-480d-b0d9-7a09ff1556df",
+      async (route) => {
+        await route.fulfill({
+          status: 500,
+        });
+      }
+    );
+
+    await expect(page.getByTestId("row-0")).toBeVisible();
+    await expect(page.getByTestId("row-1")).toBeVisible();
+
+    await expect(deleteButton).toBeVisible();
+    await deleteButton.click();
+
+    await expect(page.getByText(DELETE_STUDENT_ERROR)).toBeVisible();
   });
 });
