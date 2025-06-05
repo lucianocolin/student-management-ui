@@ -11,11 +11,13 @@ import Loading from "../../common/Loading";
 interface IStudentsTableProps {
   students: IStudentResponse[];
   isStudentsPending: boolean;
+  handleDeleteStudent: (id: string) => Promise<void>;
 }
 
 const StudentsTable = ({
   students,
   isStudentsPending = true,
+  handleDeleteStudent,
 }: IStudentsTableProps) => {
   const table = useReactTable({
     data: students,
@@ -76,8 +78,12 @@ const StudentsTable = ({
                 <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-4">
                   Add Grade
                 </button>
-                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
-                  Delete
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                  onClick={() => handleDeleteStudent(row.original.id as string)}
+                  data-testid={`delete-student-btn-${row.id}`}
+                >
+                  Delete Student
                 </button>
               </td>
             </tr>
