@@ -46,3 +46,11 @@ export const useCreateStudent = () => {
     },
   });
 };
+
+export const useDeleteStudent = () => {
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await api.delete(`/student/${id}`);
+    },
+  });
+};
