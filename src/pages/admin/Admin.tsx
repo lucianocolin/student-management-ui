@@ -15,6 +15,14 @@ import {
   DELETE_STUDENT_SUCCESS,
 } from "../../constants/student/student-messages";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  useAssignGrade,
+  useGetEnrollments,
+} from "../../services/enrollment/useEnrollment";
+import {
+  ASSIGN_GRADE_ERROR,
+  ASSIGN_GRADE_SUCCESS,
+} from "../../constants/enrollment/enrollment-messages";
 
 const Admin = () => {
   const queryClient = useQueryClient();
@@ -24,6 +32,8 @@ const Admin = () => {
   const { data: students, isPending: isStudentsPending } =
     useGetStudents(search);
   const { mutateAsync: deleteStudent } = useDeleteStudent();
+  const { data: enrollments } = useGetEnrollments();
+  const { mutateAsync: assignGrade } = useAssignGrade();
 
   const handleDeleteStudent = async (id: string) => {
     try {
@@ -39,7 +49,22 @@ const Admin = () => {
 
       toast.error(errorMessage);
     }
-    await deleteStudent(id);
+  };
+
+  const handleAssignGrade = async (enrollmentId: string, grade: number) => {
+    try {
+      await assignGrade({ enrollmentId, grade });
+
+      await queryClient.invalidateQueries({ queryKey: ["enrollments"] });
+      toast.success(ASSIGN_GRADE_SUCCESS);
+    } catch (error) {
+      const errorMessage =
+        error instanceof AxiosError && error.response?.data?.message
+          ? error.response.data.message
+          : ASSIGN_GRADE_ERROR;
+
+      toast.error(errorMessage);
+    }
   };
 
   useEffect(() => {
@@ -77,6 +102,8 @@ const Admin = () => {
           students={students ?? []}
           isStudentsPending={isStudentsPending}
           handleDeleteStudent={handleDeleteStudent}
+          enrollments={enrollments ?? []}
+          handleAssignGrade={handleAssignGrade}
         />
       </div>
     </>

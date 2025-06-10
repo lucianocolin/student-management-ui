@@ -1,3 +1,7 @@
+import {
+  ASSIGN_GRADE_ERROR,
+  ASSIGN_GRADE_SUCCESS,
+} from "./../../../src/constants/enrollment/enrollment-messages";
 import test, { expect } from "@playwright/test";
 import { LOGIN_USER_SUCCESS } from "../../../src/constants/auth/login-user-messages";
 import { myUserAdminResponse } from "../../fixture/user/my-user-admin-response";
@@ -8,6 +12,8 @@ import {
   DELETE_STUDENT_ERROR,
   DELETE_STUDENT_SUCCESS,
 } from "../../../src/constants/student/student-messages";
+import { enrollmentsResponse } from "../../fixture/enrollment/enrollmentsResponse";
+import { enrollmentUpdatedResponse } from "../../fixture/enrollment/enrollmentUpdatedResponse";
 
 test.describe("Admin Page", () => {
   test.beforeEach(async ({ page, context }) => {
@@ -165,5 +171,148 @@ test.describe("Admin Page", () => {
     await deleteButton.click();
 
     await expect(page.getByText(DELETE_STUDENT_ERROR)).toBeVisible();
+  });
+
+  test("should be able to assign grades to a student", async ({
+    page,
+    context,
+  }) => {
+    const addGradeButton = page.getByTestId("add-grade-btn-0");
+    const assignGradesTitle = page.getByTestId("assign-grades-title");
+    const assignGradesSubject = page.getByTestId("subject-name");
+    const assignGradeInput = page.getByTestId("grade-input");
+    const assignGradeButton = page.getByTestId("assign-grade-btn");
+
+    await context.route("**/api/student", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(studentsResponse),
+      });
+    });
+
+    await context.route("**/api/enrollment?studentId=", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(enrollmentsResponse),
+      });
+    });
+
+    await context.route(
+      "**/api/enrollment/c325d451-258f-480d-b0d9-7a09ff1556dd",
+      async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(enrollmentUpdatedResponse),
+        });
+      }
+    );
+
+    await expect(addGradeButton).toBeVisible();
+    await addGradeButton.click();
+
+    await expect(page.getByTestId("assign-grades-modal")).toBeVisible();
+    await expect(assignGradesTitle).toBeVisible();
+    await expect(assignGradesTitle).toHaveText("Assign Grades");
+
+    await expect(assignGradesSubject).toHaveCount(3);
+
+    await expect(assignGradeInput).toHaveCount(3);
+
+    await assignGradeInput.first().fill("7");
+    await assignGradeButton.first().click();
+
+    await expect(page.getByText(ASSIGN_GRADE_SUCCESS)).toBeVisible();
+  });
+
+  test("should render a no enrollments message if a student has no enrollments", async ({
+    page,
+    context,
+  }) => {
+    const addGradeButton = page.getByTestId("add-grade-btn-0");
+    const assignGradesTitle = page.getByTestId("assign-grades-title");
+    const noEnrollmentMessage = page.getByTestId("no-enrollments-message");
+
+    await context.route("**/api/student", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(studentsResponse),
+      });
+    });
+
+    await context.route("**/api/enrollment?studentId=", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify([]),
+      });
+    });
+
+    await expect(addGradeButton).toBeVisible();
+    await addGradeButton.click();
+
+    await expect(page.getByTestId("assign-grades-modal")).toBeVisible();
+    await expect(assignGradesTitle).toBeVisible();
+    await expect(assignGradesTitle).toHaveText("Assign Grades");
+
+    await expect(noEnrollmentMessage).toBeVisible();
+    await expect(noEnrollmentMessage).toHaveText(
+      "This student hasn't enrolled in any subjects"
+    );
+  });
+
+  test("should show an error message if there is an error assigning a grade", async ({
+    page,
+    context,
+  }) => {
+    const addGradeButton = page.getByTestId("add-grade-btn-0");
+    const assignGradesTitle = page.getByTestId("assign-grades-title");
+    const assignGradesSubject = page.getByTestId("subject-name");
+    const assignGradeInput = page.getByTestId("grade-input");
+    const assignGradeButton = page.getByTestId("assign-grade-btn");
+
+    await context.route("**/api/student", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(studentsResponse),
+      });
+    });
+
+    await context.route("**/api/enrollment?studentId=", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(enrollmentsResponse),
+      });
+    });
+
+    await context.route(
+      "**/api/enrollment/c325d451-258f-480d-b0d9-7a09ff1556dd",
+      async (route) => {
+        await route.fulfill({
+          status: 500,
+        });
+      }
+    );
+
+    await expect(addGradeButton).toBeVisible();
+    await addGradeButton.click();
+
+    await expect(page.getByTestId("assign-grades-modal")).toBeVisible();
+    await expect(assignGradesTitle).toBeVisible();
+    await expect(assignGradesTitle).toHaveText("Assign Grades");
+
+    await expect(assignGradesSubject).toHaveCount(3);
+
+    await expect(assignGradeInput).toHaveCount(3);
+
+    await assignGradeInput.first().fill("7");
+    await assignGradeButton.first().click();
+
+    await expect(page.getByText(ASSIGN_GRADE_ERROR)).toBeVisible();
   });
 });
