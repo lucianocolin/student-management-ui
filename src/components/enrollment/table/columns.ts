@@ -25,7 +25,19 @@ export const enrollmentColumns: ColumnDef<IEnrollmentResponse>[] = [
     accessorKey: "approved",
     header: COLUMNS.STATUS,
     cell: (info) => {
-      return info.getValue() ? "Approved" : "Taking";
+      const row = info.row.original;
+      const grade = row.grade;
+      const isApproved = info.getValue() as boolean;
+
+      if (!grade) {
+        return "Taking";
+      }
+
+      if (isApproved) {
+        return "Approved";
+      }
+
+      return "Failed";
     },
   },
   {
