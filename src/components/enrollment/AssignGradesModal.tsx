@@ -50,7 +50,6 @@ const AssignGradesModal = ({
               </h2>
             ) : (
               enrollments.map((enrollment) => {
-                console.log('enrollment: ', enrollment);
                 return (
                   <div key={enrollment.id} className="text-black">
                     <p className="font-bold" data-testid="subject-name">
