@@ -47,7 +47,7 @@ const StudentsTable = ({
   });
 
   return isStudentsPending ? (
-    <div>
+    <div className="flex justify-center h-screen">
       <Loading />
     </div>
   ) : (

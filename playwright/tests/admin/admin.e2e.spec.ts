@@ -141,7 +141,7 @@ test.describe("Admin Page", () => {
     await expect(page.getByTestId("row-1")).not.toBeVisible();
   });
 
-  test("should show an error an error message if there is an error deleting a student", async ({
+  test("should show an error message if there is an error deleting a student", async ({
     page,
     context,
   }) => {

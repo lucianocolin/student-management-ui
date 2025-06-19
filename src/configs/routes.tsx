@@ -3,6 +3,7 @@ import Home from "../pages/home/Home";
 import Grades from "../pages/grades/Grades";
 import Enrollments from "../pages/enrollment/Enrollments";
 import Admin from "../pages/admin/Admin";
+import RegistrationRequests from "../pages/admin/RegistrationRequests";
 
 export const publicRoutes: RouteObject[] = [
   {
@@ -24,5 +25,9 @@ export const privateRoutes: RouteObject[] = [
   {
     path: "/admin",
     element: <Admin />,
+  },
+  {
+    path: "/registration-requests",
+    element: <RegistrationRequests />,
   },
 ];

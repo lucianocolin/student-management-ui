@@ -40,3 +40,24 @@ export function useGetMyUser() {
     },
   });
 }
+
+export function useGetNotApprovedUsers() {
+  return useQuery({
+    queryKey: ["not-approved-users"],
+    queryFn: async () => {
+      const { data: response } = await api.get<IUserResponse[]>(
+        "/auth/not-approved-users"
+      );
+
+      return response;
+    },
+  });
+}
+
+export function useApproveRegistrationRequest() {
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await api.patch(`/auth/approve/${id}`);
+    },
+  });
+}

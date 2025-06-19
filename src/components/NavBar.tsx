@@ -130,6 +130,13 @@ const NavBar = () => {
     return isAdmin ? (
       <>
         <Link
+          to="/registration-requests"
+          className="mr-4 font-bold"
+          data-testid="nav-registration-requests-link"
+        >
+          Registration Requests
+        </Link>
+        <Link
           to="/admin"
           className="mr-4 font-bold"
           data-testid="nav-admin-link"
