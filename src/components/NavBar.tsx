@@ -32,7 +32,6 @@ import {
 } from "../constants/student/student-messages";
 import type { IUserResponse } from "../interfaces/user/IUserResponse";
 import { useGetCareers } from "../services/career/useCareer";
-import type { ICareerResponse } from "../interfaces/career/ICareerResponse";
 import { USER_ROLES } from "../enums/user/user-roles";
 
 const NavBar = () => {
@@ -261,7 +260,7 @@ const NavBar = () => {
         user={myUser as IUserResponse}
         handleCreateStudent={handleCreateStudent}
         isCreateStudentPending={isCreateStudentPending}
-        careers={careers as ICareerResponse[]}
+        careers={careers ?? []}
       />
     </>
   );
