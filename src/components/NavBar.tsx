@@ -129,6 +129,9 @@ const NavBar = () => {
   const renderNavLinks = () => {
     return isAdmin ? (
       <>
+        <Link to="/registration-requests" className="mr-4 font-bold">
+          Registration Requests
+        </Link>
         <Link
           to="/admin"
           className="mr-4 font-bold"
