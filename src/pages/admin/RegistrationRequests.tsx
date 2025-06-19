@@ -36,7 +36,10 @@ const RegistrationRequests = () => {
 
   return (
     <>
-      <h1 className="text-center text-2xl font-bold py-5">
+      <h1
+        className="text-center text-2xl font-bold py-5"
+        data-testid="registration-requests-title"
+      >
         Registration Requests
       </h1>
       <div className="container mx-auto">

@@ -129,7 +129,11 @@ const NavBar = () => {
   const renderNavLinks = () => {
     return isAdmin ? (
       <>
-        <Link to="/registration-requests" className="mr-4 font-bold">
+        <Link
+          to="/registration-requests"
+          className="mr-4 font-bold"
+          data-testid="nav-registration-requests-link"
+        >
           Registration Requests
         </Link>
         <Link

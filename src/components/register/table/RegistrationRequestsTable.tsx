@@ -84,7 +84,7 @@ const RegistrationRequestsTable = ({
                       ? "bg-gray-500"
                       : "bg-green-500 hover:bg-green-700"
                   }`}
-                  data-testid={`approve-${row.id}`}
+                  data-testid={`approve-registration-request-btn-${row.id}`}
                 >
                   {isApprovePending ? "Approving..." : "Approve"}
                 </button>
